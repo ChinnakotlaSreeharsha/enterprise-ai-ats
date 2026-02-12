@@ -1,5 +1,6 @@
 # ======================================================
-# ENTERPRISE AI ATS SYSTEM - COMPLETE PROFESSIONAL V4
+# ENTERPRISE AI ATS SYSTEM - COMPLETE PROFESSIONAL V7
+# FIXED COMMON HEADER + FULL FOOTER RESTORED
 # ======================================================
 
 import streamlit as st
@@ -13,7 +14,7 @@ from section_analyzer import extract_sections
 from quality_analyzer import analyze_quality
 
 # ------------------------------------------------------
-# PROFESSIONAL PAGE CONFIG
+# PAGE CONFIG
 # ------------------------------------------------------
 st.set_page_config(
     page_title="Enterprise AI ATS Pro",
@@ -23,126 +24,103 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------
-# COMPLETE PROFESSIONAL CSS
+# PROFESSIONAL CSS
 # ------------------------------------------------------
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
-    :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --glass-bg: rgba(255, 255, 255, 0.95);
-        --glass-border: rgba(255,255,255,0.2);
-    }
-    
-    .main { padding-top: 2rem; }
-    
-    /* HERO HEADER */
-    .hero-header {
-        background: var(--primary-gradient);
-        border-radius: 30px;
-        padding: 3rem 2rem;
-        text-align: center;
-        margin-bottom: 3rem;
-        box-shadow: 0 30px 60px rgba(102,126,234,0.3);
-    }
-    
-    .main-title {
-        font-family: 'Inter', sans-serif;
-        font-weight: 800;
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        background: white;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin: 0 0 1rem 0;
-    }
-    
-    .hero-subtitle {
-        font-family: 'Inter', sans-serif;
-        font-weight: 400;
-        font-size: clamp(1.1rem, 3vw, 1.4rem);
-        color: rgba(255,255,255,0.95);
-        margin: 0;
-    }
-    
-    /* PRO CARDS */
-    .pro-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(25px);
-        border-radius: 24px;
-        padding: 2.5rem;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.12);
-        border: 1px solid var(--glass-border);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 220px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .pro-card:hover {
-        transform: translateY(-12px) scale(1.02);
-        box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-    }
-    
-    /* MEGA BUTTON */
-    .mega-btn {
-        background: var(--primary-gradient);
-        border: none;
-        border-radius: 20px;
-        padding: 1.2rem 3rem;
-        font-weight: 700;
-        font-size: 1.15rem;
-        color: white;
-        transition: all 0.4s ease;
-        box-shadow: 0 15px 35px rgba(102,126,234,0.4);
-        width: 100%;
-    }
-    
-    .mega-btn:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 25px 50px rgba(102,126,234,0.6);
-    }
-    
-    /* SIDEBAR */
-    .sidebar .stRadio > div > div > label {
-        font-family: 'Inter', sans-serif;
-        font-weight: 600;
-        padding: 1.2rem 1.5rem;
-        border-radius: 16px;
-        margin: 0.3rem 0;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-        font-size: 1.05rem;
-    }
-    
-    .sidebar .stRadio > div > div > label:hover {
-        background: rgba(102,126,234,0.08);
-        border-color: #667eea;
-        color: #667eea !important;
-        transform: translateX(8px);
-    }
-    
-    /* STATUS */
-    .status-banner {
-        background: linear-gradient(135deg, #10b981, #059669);
-        border-radius: 20px;
-        padding: 1.5rem 2rem;
-        color: white;
-        text-align: center;
-        margin-bottom: 2rem;
-        box-shadow: 0 20px 40px rgba(16,185,129,0.3);
-    }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --glass-bg: rgba(255,255,255,0.95);
+}
+
+/* REMOVE DEFAULT TOP SPACE */
+.block-container {
+    padding-top: 6rem !important;
+}
+
+/* FIXED HEADER */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 1.2rem 2rem;
+    z-index: 999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+.fixed-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: white;
+    margin: 0;
+}
+
+.fixed-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.9);
+    margin-top: 4px;
+}
+
+/* SIDEBAR BRAND */
+.sidebar-brand {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 1rem;
+    border-radius: 16px;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+/* PRO CARDS */
+.pro-card {
+    background: var(--glass-bg);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+    text-align: center;
+    transition: 0.3s ease;
+}
+.pro-card:hover {
+    transform: translateY(-6px);
+}
+
+/* STATUS */
+.status-banner {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 20px;
+    padding: 1.2rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------------
-# SESSION STATE - COMPLETE
+# FIXED HEADER (COMMON)
+# ------------------------------------------------------
+st.markdown("""
+<div class='fixed-header'>
+    <div class='fixed-title'>Enterprise AI ATS Pro</div>
+    <div class='fixed-subtitle'>
+        Advanced Resume Intelligence & Precision Job Matching
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ------------------------------------------------------
+# SESSION STATE
 # ------------------------------------------------------
 if "resume_text" not in st.session_state:
     st.session_state.resume_text = None
@@ -151,266 +129,174 @@ if "resume_text" not in st.session_state:
     st.session_state.initialized = False
 
 # ------------------------------------------------------
-# HERO HEADER
+# SIDEBAR
 # ------------------------------------------------------
-st.markdown("""
-<div class='hero-header'>
-    <h1 class='main-title'>Enterprise AI ATS Pro</h1>
-    <p class='hero-subtitle'>Advanced Resume Intelligence & Precision Job Matching</p>
-</div>
-""", unsafe_allow_html=True)
-
-# ------------------------------------------------------
-# MAIN CONTENT AREA
-# ------------------------------------------------------
-
-# SIDEBAR NAVIGATION - ALWAYS VISIBLE
 with st.sidebar:
-    st.markdown("## 🎛️ **Control Panel**")
+    st.markdown("""
+    <div class='sidebar-brand'>
+        🤖 Enterprise AI ATS Pro
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("## 🎛️ Control Panel")
     st.markdown("---")
-    
+
     if not st.session_state.initialized:
-        st.info("👆 **Step 1: Upload & Analyze**")
-        st.markdown("---")
-    
+        st.info("Step 1: Upload & Analyze")
+
     nav_options = [
-        "📤 **Upload & Initialize**",
-        "📊 **Executive Dashboard**",
-        "🎯 **Skill Analysis**", 
-        "📈 **Score Breakdown**",
-        "💡 **Resume Insights**",
-        "📄 **Export Report**"
+        "📤 Upload & Initialize",
+        "📊 Executive Dashboard",
+        "🎯 Skill Analysis",
+        "📈 Score Breakdown",
+        "💡 Resume Insights",
+        "📄 Export Report"
     ]
-    
+
     selected = st.radio(
-        "Navigate:", 
+        "Navigate:",
         nav_options,
-        index=0 if not st.session_state.initialized else 1,
-        key="main_nav"
+        index=0 if not st.session_state.initialized else 1
     )
-    
-    menu_map = {
-        "📤 **Upload & Initialize**": "Upload",
-        "📊 **Executive Dashboard**": "Dashboard",
-        "🎯 **Skill Analysis**": "Skills", 
-        "📈 **Score Breakdown**": "Breakdown",
-        "💡 **Resume Insights**": "Insights",
-        "📄 **Export Report**": "Export"
-    }
-    menu = menu_map[selected]
 
 # ======================================================
-# UPLOAD & INITIALIZE
+# UPLOAD
 # ======================================================
-if menu == "Upload":
-    st.markdown("## 🚀 **Upload & Initialize Analysis**")
-    
-    col1, col2 = st.columns([1, 1], gap="large")
-    
+if selected == "📤 Upload & Initialize":
+
+    st.markdown("## 🚀 Upload & Initialize Analysis")
+
+    col1, col2 = st.columns(2)
+
     with col1:
-        st.markdown("### 📄 **Upload Resume**")
-        resume_file = st.file_uploader(
-            "Choose PDF Resume", 
-            type=["pdf"],
-            help="Upload your resume in PDF format"
-        )
-    
+        resume_file = st.file_uploader("Upload Resume (PDF)", type=["pdf"])
+
     with col2:
-        st.markdown("### 💼 **Job Description**")
-        jd_text = st.text_area(
-            "Paste Job Description", 
-            height=220,
-            placeholder="Paste the complete job description here...",
-            help="Copy-paste the full job posting"
-        )
-    
-    if st.button("🎯 **ANALYZE RESUME NOW**", type="primary", key="analyze_btn", help="Click after uploading both files"):
+        jd_text = st.text_area("Paste Job Description", height=220)
+
+    if st.button("🎯 ANALYZE RESUME NOW", type="primary"):
         if resume_file and jd_text.strip():
-            with st.spinner("🔬 AI Processing your documents..."):
-                try:
-                    reader = PyPDF2.PdfReader(resume_file)
-                    text = ""
-                    for page in reader.pages:
-                        content = page.extract_text()
-                        if content:
-                            text += content + " "
-                    
-                    st.session_state.resume_text = text
-                    st.session_state.jd_text = jd_text
-                    st.session_state.scores = compute_scores(text, jd_text)
-                    st.session_state.initialized = True
-                    
-                    st.markdown("""
-                    <div class='status-banner'>
-                        <h3>✅ ANALYSIS COMPLETE!</h3>
-                        <p>🎉 Use sidebar navigation to explore all insights</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    st.balloons()
-                    st.rerun()
-                    
-                except Exception as e:
-                    st.error(f"❌ Error processing PDF: {str(e)}")
+
+            reader = PyPDF2.PdfReader(resume_file)
+            text = ""
+            for page in reader.pages:
+                content = page.extract_text()
+                if content:
+                    text += content + " "
+
+            st.session_state.resume_text = text
+            st.session_state.jd_text = jd_text
+            st.session_state.scores = compute_scores(text, jd_text)
+            st.session_state.initialized = True
+
+            st.markdown("""
+            <div class='status-banner'>
+                ✅ Analysis Complete! Explore from sidebar.
+            </div>
+            """, unsafe_allow_html=True)
+
+            st.balloons()
+            st.rerun()
+
         else:
-            st.error("🔴 **Please upload resume AND paste job description**")
+            st.error("Please upload resume AND paste job description.")
 
 # ------------------------------------------------------
-# CHECK INITIALIZATION FOR OTHER PAGES
+# PROTECTION
 # ------------------------------------------------------
-if menu != "Upload" and not st.session_state.initialized:
-    st.error("👆 **Please complete Upload & Initialize first from sidebar**")
+if selected != "📤 Upload & Initialize" and not st.session_state.initialized:
+    st.error("Please complete Upload & Initialize first.")
     st.stop()
 
 # ======================================================
 # DASHBOARD
 # ======================================================
-if menu == "Dashboard":
-    st.markdown("## 📊 **Executive Dashboard**")
-    
+elif selected == "📊 Executive Dashboard":
+
     semantic, keyword, final = st.session_state.scores
-    
-    col1, col2, col3 = st.columns(3, gap="large")
-    
-    with col1:
-        st.markdown(f"""
-        <div class='pro-card'>
-            <div style='font-size: 3.5rem; margin-bottom: 1rem;'>🤖</div>
-            <h4 style='color: #64748b; margin: 0.5rem 0 1.5rem 0;'>Semantic Score</h4>
-            <h1 style='font-size: 3.5rem; color: #10b981; margin: 0;'>{semantic:.0f}%</h1>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown(f"""
-        <div class='pro-card'>
-            <div style='font-size: 3.5rem; margin-bottom: 1rem;'>🔍</div>
-            <h4 style='color: #64748b; margin: 0.5rem 0 1.5rem 0;'>Keyword Score</h4>
-            <h1 style='font-size: 3.5rem; color: #f59e0b; margin: 0;'>{keyword:.0f}%</h1>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown(f"""
-        <div class='pro-card'>
-            <div style='font-size: 3.5rem; margin-bottom: 1rem;'>🎯</div>
-            <h4 style='color: #64748b; margin: 0.5rem 0 1.5rem 0;'>Final ATS Score</h4>
-            <h1 style='font-size: 3.5rem; color: #ef4444; margin: 0;'>{final:.0f}%</h1>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.markdown("### **ATS Pass Rate**")
-        st.progress(final / 100)
-    with col2:
-        st.markdown(f"**{int(final)}%**")
-    
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.markdown(f"<div class='pro-card'><h3>Semantic</h3><h1>{semantic:.0f}%</h1></div>", unsafe_allow_html=True)
+    col2.markdown(f"<div class='pro-card'><h3>Keyword</h3><h1>{keyword:.0f}%</h1></div>", unsafe_allow_html=True)
+    col3.markdown(f"<div class='pro-card'><h3>Final ATS</h3><h1>{final:.0f}%</h1></div>", unsafe_allow_html=True)
+
+    st.progress(final / 100)
+
     quality = analyze_quality(st.session_state.resume_text)
-    col1, col2 = st.columns(2)
-    col1.metric("📝 Resume Quality", f"{quality['quantification_score']:.1f}%")
-    col2.metric("📄 Word Count", f"{quality['word_count']:,}")
+    st.metric("Resume Quality", f"{quality['quantification_score']:.1f}%")
+    st.metric("Word Count", f"{quality['word_count']:,}")
 
 # ======================================================
 # SKILL ANALYSIS
 # ======================================================
-elif menu == "Skills":
-    st.markdown("## 🎯 **Skill Gap Analysis**")
-    
+elif selected == "🎯 Skill Analysis":
+
     resume_clean = clean_text(st.session_state.resume_text)
     jd_clean = clean_text(st.session_state.jd_text)
-    
+
     resume_skills = extract_skills(resume_clean)
     jd_skills = extract_skills(jd_clean)
-    
+
     matched = list(set(resume_skills) & set(jd_skills))
     missing = list(set(jd_skills) - set(resume_skills))
-    
-    skill_match_percent = skill_match_score(resume_skills, jd_skills)
-    
-    col1, col2 = st.columns(2, gap="large")
-    
-    with col1:
-        st.markdown(f"### ✅ **Matched Skills** ({len(matched)})")
-        if matched:
-            for skill in matched[:15]:
-                st.success(f"• **{skill}**")
-        else:
-            st.warning("No matching skills found")
-    
-    with col2:
-        st.markdown(f"### ❌ **Missing Skills** ({len(missing)})")
-        if missing:
-            for skill in missing[:15]:
-                st.error(f"• **{skill}**")
-        else:
-            st.success("🎉 All skills present!")
-    
-    st.markdown("---")
+
     col1, col2 = st.columns(2)
-    col1.metric("🎯 Skill Match", f"{skill_match_percent:.1f}%")
-    col2.metric("📊 Resume Quality", f"{analyze_quality(st.session_state.resume_text)['quantification_score']:.1f}%")
+
+    with col1:
+        st.subheader(f"Matched Skills ({len(matched)})")
+        for s in matched[:20]:
+            st.success(s)
+
+    with col2:
+        st.subheader(f"Missing Skills ({len(missing)})")
+        for s in missing[:20]:
+            st.error(s)
 
 # ======================================================
 # SCORE BREAKDOWN
 # ======================================================
-elif menu == "Breakdown":
-    st.markdown("## 📈 **Detailed Score Breakdown**")
-    
+elif selected == "📈 Score Breakdown":
+
     semantic, keyword, final = st.session_state.scores
-    
-    col1, col2, col3 = st.columns(3)
-    col1.metric("🤖 Semantic", f"{semantic:.1f}%")
-    col2.metric("🔍 Keywords", f"{keyword:.1f}%")
-    col3.metric("🎯 Final Score", f"{final:.1f}%")
-    
-    if 'score_breakdown_chart' in globals():
-        score_breakdown_chart(semantic, keyword, final)
+
+    st.metric("Semantic", f"{semantic:.1f}%")
+    st.metric("Keyword", f"{keyword:.1f}%")
+    st.metric("Final", f"{final:.1f}%")
+
+    score_breakdown_chart(semantic, keyword, final)
 
 # ======================================================
 # INSIGHTS
 # ======================================================
-elif menu == "Insights":
-    st.markdown("## 💡 **Resume Section Analysis**")
-    
+elif selected == "💡 Resume Insights":
+
     sections = extract_sections(st.session_state.resume_text)
-    
-    for section_name, content in sections.items():
-        with st.expander(f"📋 **{section_name.upper()}**"):
-            if content:
-                st.write(content[:800] + "..." if len(content) > 800 else content)
-            else:
-                st.warning("⚠️ No content detected")
+
+    for name, content in sections.items():
+        with st.expander(name.upper()):
+            st.write(content if content else "No content detected")
 
 # ======================================================
-# EXPORT REPORT
+# EXPORT
 # ======================================================
-elif menu == "Export":
-    st.markdown("## 📄 **Professional PDF Report**")
-    
+elif selected == "📄 Export Report":
+
     semantic, keyword, final = st.session_state.scores
     quality = analyze_quality(st.session_state.resume_text)
-    
-    st.info("✅ **Report includes:** All scores, skill analysis, quality metrics & recommendations")
-    
-    col1, col2, col3 = st.columns(3)
-    col1.metric("🎯 Final Score", f"{final:.1f}%")
-    col2.metric("📝 Word Count", quality["word_count"])
-    col3.metric("✨ Quality Score", f"{quality['quantification_score']:.1f}%")
-    
-    if st.button("🎯 **GENERATE & DOWNLOAD PDF**", type="primary", use_container_width=True):
-        with st.spinner("📊 Creating professional report..."):
-            generate_pdf_report({
-                "semantic": semantic,
-                "keyword": keyword,
-                "final": final,
-                "word_count": quality["word_count"]
-            })
+
+    if st.button("Generate & Download PDF", type="primary", use_container_width=True):
+        generate_pdf_report({
+            "semantic": semantic,
+            "keyword": keyword,
+            "final": final,
+            "word_count": quality["word_count"]
+        })
 
 # ======================================================
-# ORIGINAL PROFESSIONAL FOOTER - EXACT COPY
+# FOOTER (FULL RESTORED WITH ICONS)
 # ======================================================
 st.markdown("---")
-
 st.markdown("© 2026 **Chinnakotla Sree Harsha**")
 st.markdown("AI Powered ATS Resume Scanner Platform")
 

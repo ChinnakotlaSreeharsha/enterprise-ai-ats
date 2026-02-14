@@ -1,170 +1,118 @@
 # ======================================================
-# ENTERPRISE AI ATS SYSTEM - COMPLETE PROFESSIONAL V7
-# FIXED COMMON HEADER + FULL FOOTER RESTORED
+# ATS SAAS 2.1 PRODUCTION BUILD
+# STICKY TABS BELOW HEADER
 # ======================================================
 
 import streamlit as st
 import PyPDF2
+import time
+
+from header import load_header
+from footer import load_footer
 
 from ats_engine import compute_scores, clean_text
-from skill_engine import extract_skills, skill_match_score
-from analytics import score_breakdown_chart, radar_chart
+from skill_engine import extract_skills
+from analytics import score_breakdown_chart
 from report_generator import generate_pdf_report
 from section_analyzer import extract_sections
 from quality_analyzer import analyze_quality
 
+
 # ------------------------------------------------------
-# PAGE CONFIG
+# CONFIG
 # ------------------------------------------------------
 st.set_page_config(
-    page_title="Enterprise AI ATS Pro",
+    page_title="Enterprise AI ATS",
     layout="wide",
-    initial_sidebar_state="expanded",
     page_icon="🤖"
 )
 
 # ------------------------------------------------------
-# PROFESSIONAL CSS
+# SESSION STATE INIT
 # ------------------------------------------------------
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+if "initialized" not in st.session_state:
+    st.session_state.initialized = False
 
-:root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --glass-bg: rgba(255,255,255,0.95);
-}
-
-/* REMOVE DEFAULT TOP SPACE */
-.block-container {
-    padding-top: 6rem !important;
-}
-
-/* FIXED HEADER */
-.fixed-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    padding: 1.2rem 2rem;
-    z-index: 999;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    text-align: center;
-}
-
-.fixed-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 1.8rem;
-    color: white;
-    margin: 0;
-}
-
-.fixed-subtitle {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    color: rgba(255,255,255,0.9);
-    margin-top: 4px;
-}
-
-/* SIDEBAR BRAND */
-.sidebar-brand {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    padding: 1rem;
-    border-radius: 16px;
-    text-align: center;
-    color: white;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-}
-
-/* PRO CARDS */
-.pro-card {
-    background: var(--glass-bg);
-    border-radius: 24px;
-    padding: 2.5rem;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.12);
-    text-align: center;
-    transition: 0.3s ease;
-}
-.pro-card:hover {
-    transform: translateY(-6px);
-}
-
-/* STATUS */
-.status-banner {
-    background: linear-gradient(135deg, #10b981, #059669);
-    border-radius: 20px;
-    padding: 1.2rem;
-    color: white;
-    text-align: center;
-    margin-bottom: 2rem;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ------------------------------------------------------
-# FIXED HEADER (COMMON)
-# ------------------------------------------------------
-st.markdown("""
-<div class='fixed-header'>
-    <div class='fixed-title'>Enterprise AI ATS Pro</div>
-    <div class='fixed-subtitle'>
-        Advanced Resume Intelligence & Precision Job Matching
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# ------------------------------------------------------
-# SESSION STATE
-# ------------------------------------------------------
 if "resume_text" not in st.session_state:
     st.session_state.resume_text = None
     st.session_state.jd_text = None
     st.session_state.scores = None
-    st.session_state.initialized = False
+
 
 # ------------------------------------------------------
-# SIDEBAR
+# LOAD HEADER
 # ------------------------------------------------------
-with st.sidebar:
-    st.markdown("""
-    <div class='sidebar-brand'>
-        🤖 Enterprise AI ATS Pro
-    </div>
-    """, unsafe_allow_html=True)
+load_header(st.session_state.initialized)
 
-    st.markdown("## 🎛️ Control Panel")
-    st.markdown("---")
+# Spacer for fixed header height
+st.markdown("<div style='height:85px;'></div>", unsafe_allow_html=True)
 
-    if not st.session_state.initialized:
-        st.info("Step 1: Upload & Analyze")
 
-    nav_options = [
-        "📤 Upload & Initialize",
-        "📊 Executive Dashboard",
-        "🎯 Skill Analysis",
-        "📈 Score Breakdown",
-        "💡 Resume Insights",
-        "📄 Export Report"
-    ]
+# ------------------------------------------------------
+# STICKY TABS CSS (THE IMPORTANT FIX)
+# ------------------------------------------------------
+st.markdown("""
+<style>
 
-    selected = st.radio(
-        "Navigate:",
-        nav_options,
-        index=0 if not st.session_state.initialized else 1
-    )
+/* Sticky Tabs */
+div[data-baseweb="tab-list"] {
+    position: sticky;
+    top: 85px;
+    background: #0b1220;
+    z-index: 999;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Tab Styling */
+button[data-baseweb="tab"] {
+    border-radius: 25px !important;
+    margin-right: 8px !important;
+    padding: 8px 18px !important;
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    color: white !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover */
+button[data-baseweb="tab"]:hover {
+    border-color: #3b82f6 !important;
+    color: #3b82f6 !important;
+}
+
+/* Active Tab */
+button[data-baseweb="tab"][aria-selected="true"] {
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: white !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+# ------------------------------------------------------
+# TABS NAVIGATION
+# ------------------------------------------------------
+tab_upload, tab_dashboard, tab_skills, tab_analytics, tab_diagnostics, tab_export = st.tabs([
+    "Upload",
+    "Dashboard",
+    "Skills",
+    "Analytics",
+    "Diagnostics",
+    "Export"
+])
+
 
 # ======================================================
-# UPLOAD
+# UPLOAD TAB
 # ======================================================
-if selected == "📤 Upload & Initialize":
+with tab_upload:
 
-    st.markdown("## 🚀 Upload & Initialize Analysis")
+    st.title("Resume Upload & ATS Analysis")
 
     col1, col2 = st.columns(2)
 
@@ -174,146 +122,123 @@ if selected == "📤 Upload & Initialize":
     with col2:
         jd_text = st.text_area("Paste Job Description", height=220)
 
-    if st.button("🎯 ANALYZE RESUME NOW", type="primary"):
+    if st.button("Run ATS Analysis", type="primary"):
+
         if resume_file and jd_text.strip():
 
-            reader = PyPDF2.PdfReader(resume_file)
-            text = ""
-            for page in reader.pages:
-                content = page.extract_text()
-                if content:
-                    text += content + " "
+            loading = st.empty()
+
+            with loading.container():
+
+                st.info("Initializing ATS Engine...")
+                progress = st.progress(0)
+
+                for i in range(20):
+                    time.sleep(0.02)
+                    progress.progress(i + 1)
+
+                st.info("Parsing Resume...")
+                reader = PyPDF2.PdfReader(resume_file)
+                text = ""
+
+                for page in reader.pages:
+                    if page.extract_text():
+                        text += page.extract_text() + " "
+
+                for i in range(20, 60):
+                    time.sleep(0.02)
+                    progress.progress(i + 1)
+
+                st.info("Computing Scores...")
+                semantic, keyword, final = compute_scores(text, jd_text)
+
+                for i in range(60, 100):
+                    time.sleep(0.02)
+                    progress.progress(i + 1)
+
+            loading.empty()
 
             st.session_state.resume_text = text
             st.session_state.jd_text = jd_text
-            st.session_state.scores = compute_scores(text, jd_text)
+            st.session_state.scores = (semantic, keyword, final)
             st.session_state.initialized = True
 
-            st.markdown("""
-            <div class='status-banner'>
-                ✅ Analysis Complete! Explore from sidebar.
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.balloons()
-            st.rerun()
+            st.success("Analysis Completed Successfully ✔")
 
         else:
-            st.error("Please upload resume AND paste job description.")
+            st.error("Both resume and job description are required.")
+
 
 # ------------------------------------------------------
-# PROTECTION
+# LOCK OTHER TABS IF NOT INITIALIZED
 # ------------------------------------------------------
-if selected != "📤 Upload & Initialize" and not st.session_state.initialized:
-    st.error("Please complete Upload & Initialize first.")
-    st.stop()
-
-# ======================================================
-# DASHBOARD
-# ======================================================
-elif selected == "📊 Executive Dashboard":
-
-    semantic, keyword, final = st.session_state.scores
-
-    col1, col2, col3 = st.columns(3)
-
-    col1.markdown(f"<div class='pro-card'><h3>Semantic</h3><h1>{semantic:.0f}%</h1></div>", unsafe_allow_html=True)
-    col2.markdown(f"<div class='pro-card'><h3>Keyword</h3><h1>{keyword:.0f}%</h1></div>", unsafe_allow_html=True)
-    col3.markdown(f"<div class='pro-card'><h3>Final ATS</h3><h1>{final:.0f}%</h1></div>", unsafe_allow_html=True)
-
-    st.progress(final / 100)
-
-    quality = analyze_quality(st.session_state.resume_text)
-    st.metric("Resume Quality", f"{quality['quantification_score']:.1f}%")
-    st.metric("Word Count", f"{quality['word_count']:,}")
-
-# ======================================================
-# SKILL ANALYSIS
-# ======================================================
-elif selected == "🎯 Skill Analysis":
-
-    resume_clean = clean_text(st.session_state.resume_text)
-    jd_clean = clean_text(st.session_state.jd_text)
-
-    resume_skills = extract_skills(resume_clean)
-    jd_skills = extract_skills(jd_clean)
-
-    matched = list(set(resume_skills) & set(jd_skills))
-    missing = list(set(jd_skills) - set(resume_skills))
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader(f"Matched Skills ({len(matched)})")
-        for s in matched[:20]:
-            st.success(s)
-
-    with col2:
-        st.subheader(f"Missing Skills ({len(missing)})")
-        for s in missing[:20]:
-            st.error(s)
-
-# ======================================================
-# SCORE BREAKDOWN
-# ======================================================
-elif selected == "📈 Score Breakdown":
+if not st.session_state.initialized:
+    with tab_dashboard:
+        st.warning("Upload resume to unlock Dashboard.")
+    with tab_skills:
+        st.warning("Upload resume to unlock Skills.")
+    with tab_analytics:
+        st.warning("Upload resume to unlock Analytics.")
+    with tab_diagnostics:
+        st.warning("Upload resume to unlock Diagnostics.")
+    with tab_export:
+        st.warning("Upload resume to unlock Export.")
+else:
 
     semantic, keyword, final = st.session_state.scores
 
-    st.metric("Semantic", f"{semantic:.1f}%")
-    st.metric("Keyword", f"{keyword:.1f}%")
-    st.metric("Final", f"{final:.1f}%")
+    with tab_dashboard:
+        st.title("Executive Overview")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Semantic Match", f"{semantic:.0f}%")
+        col2.metric("Keyword Match", f"{keyword:.0f}%")
+        col3.metric("Final ATS Score", f"{final:.0f}%")
+        st.progress(final / 100)
 
-    score_breakdown_chart(semantic, keyword, final)
+    with tab_skills:
+        st.title("Skill Intelligence")
+        resume_clean = clean_text(st.session_state.resume_text)
+        jd_clean = clean_text(st.session_state.jd_text)
 
-# ======================================================
-# INSIGHTS
-# ======================================================
-elif selected == "💡 Resume Insights":
+        resume_skills = extract_skills(resume_clean)
+        jd_skills = extract_skills(jd_clean)
 
-    sections = extract_sections(st.session_state.resume_text)
+        matched = list(set(resume_skills) & set(jd_skills))
+        missing = list(set(jd_skills) - set(resume_skills))
 
-    for name, content in sections.items():
-        with st.expander(name.upper()):
-            st.write(content if content else "No content detected")
+        col1, col2 = st.columns(2)
+        with col1:
+            for skill in matched[:20]:
+                st.success(skill)
+        with col2:
+            for skill in missing[:20]:
+                st.error(skill)
 
-# ======================================================
-# EXPORT
-# ======================================================
-elif selected == "📄 Export Report":
+    with tab_analytics:
+        st.title("Score Analytics")
+        score_breakdown_chart(semantic, keyword, final)
 
-    semantic, keyword, final = st.session_state.scores
-    quality = analyze_quality(st.session_state.resume_text)
+    with tab_diagnostics:
+        st.title("Resume Diagnostics")
+        sections = extract_sections(st.session_state.resume_text)
+        for name, content in sections.items():
+            with st.expander(name.upper()):
+                st.write(content if content else "No content detected")
 
-    if st.button("Generate & Download PDF", type="primary", use_container_width=True):
-        generate_pdf_report({
-            "semantic": semantic,
-            "keyword": keyword,
-            "final": final,
-            "word_count": quality["word_count"]
-        })
+    with tab_export:
+        st.title("Export ATS Report")
+        if st.button("Generate PDF Report", type="primary", use_container_width=True):
+            generate_pdf_report({
+                "semantic": semantic,
+                "keyword": keyword,
+                "final": final,
+                "word_count": analyze_quality(st.session_state.resume_text)["word_count"]
+            })
+            st.success("Report Generated Successfully.")
 
-# ======================================================
-# FOOTER (FULL RESTORED WITH ICONS)
-# ======================================================
-st.markdown("---")
-st.markdown("© 2026 **Chinnakotla Sree Harsha**")
-st.markdown("AI Powered ATS Resume Scanner Platform")
 
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.image("https://cdn-icons-png.flaticon.com/512/3536/3536505.png", width=30)
-    st.markdown("[LinkedIn](https://www.linkedin.com/in/chinnakotla-sree-harsha-85502620b)")
-
-with col2:
-    st.image("https://cdn-icons-png.flaticon.com/512/841/841364.png", width=30)
-    st.markdown("[Portfolio](https://myportfolio-i3gd.onrender.com/)")
-
-with col3:
-    st.image("https://cdn-icons-png.flaticon.com/512/733/733553.png", width=30)
-    st.markdown("[GitHub](https://github.com/ChinnakotlaSreeharsha)")
-
-with col4:
-    st.image("https://cdn-icons-png.flaticon.com/512/733/733558.png", width=30)
-    st.markdown("[Linktree](https://linktr.ee/chinnakotla_sreeharsha)")
+# ------------------------------------------------------
+# FOOTER
+# ------------------------------------------------------
+st.markdown("<div style='height:60px;'></div>", unsafe_allow_html=True)
+load_footer()
